@@ -1,0 +1,82 @@
+@import 'tailwindcss';
+@import '../../../packages/brand/brand.css';
+
+/*
+  Lane Dash: design tokens (Tailwind v4).
+  Every colour maps onto the shared Zeal brand palette (packages/brand),
+  exposed via @theme as Tailwind utilities (bg-surface, text-primary, ...).
+  Use these in components, never raw hex values.
+*/
+@theme {
+  /* Surfaces / neutrals */
+  --color-background: var(--neutral-50);
+  --color-surface: var(--neutral-0);
+  --color-surface-muted: var(--neutral-100);
+  --color-border: var(--neutral-200);
+  --color-border-strong: var(--neutral-300);
+
+  /* Text */
+  --color-heading: var(--neutral-900);
+  --color-text: var(--neutral-800);
+  --color-muted: var(--neutral-600);
+  --color-subtle: var(--neutral-500);
+
+  /* Primary: Zeal green */
+  --color-primary: var(--brand-700);
+  --color-primary-hover: var(--brand-800);
+  --color-primary-soft: var(--brand-100);
+  --color-on-primary: var(--neutral-0);
+
+  /* Accent: amber */
+  --color-accent: var(--accent-700);
+  --color-accent-strong: var(--accent-600);
+  --color-accent-soft: var(--accent-100);
+
+  /* Semantic */
+  --color-success: var(--brand-success);
+  --color-warning: var(--brand-warning);
+  --color-error: var(--brand-danger);
+
+  --radius-pill: 9999px;
+  --radius-card: 1.25rem;
+
+  --shadow-card: 0 14px 38px -18px rgba(13, 22, 17, 0.35);
+  --shadow-glow: 0 8px 24px -8px rgba(28, 85, 42, 0.55);
+
+  --ease-snap: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  --font-display: var(--brand-font-display);
+  --font-body: var(--brand-font-body);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background: var(--color-background);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Frosted surface for HUD pills / overlay cards over the game video. */
+@utility glass-card {
+  background: color-mix(in srgb, var(--color-surface) 86%, transparent);
+  backdrop-filter: blur(10px);
+  border: 1px solid color-mix(in srgb, var(--color-border-strong) 70%, transparent);
+  box-shadow: var(--shadow-card);
+}
+
+/* Legible text over the bright game canvas: a light halo plus a soft dark
+   drop so copy reads on any frame of the video. */
+@utility text-hud {
+  font-family: var(--font-display);
+  text-shadow:
+    0 1px 2px rgba(255, 255, 255, 0.8),
+    0 2px 12px rgba(13, 22, 17, 0.25);
+}

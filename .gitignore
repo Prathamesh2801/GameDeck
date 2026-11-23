@@ -1,0 +1,16 @@
+node_modules/
+dist/
+dist.zip
+*.local
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea/
+# local-only media scratch (100MB+ of raw video renders)
+games/royal-chase/_archive/
+games/*/scripts/shots/

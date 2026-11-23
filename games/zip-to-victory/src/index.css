@@ -1,0 +1,155 @@
+@import 'tailwindcss';
+@import '../../../packages/brand/brand.css';
+
+/*
+  Zip to Victory: design tokens (Tailwind v4).
+  Every colour maps onto the shared Zeal brand palette (packages/brand),
+  exposed via @theme as Tailwind utilities (bg-surface, text-primary, ...).
+  Use these in components, never raw hex values.
+*/
+@theme {
+  /* Surfaces / neutrals */
+  --color-background: var(--neutral-50);
+  --color-surface: var(--neutral-0);
+  --color-surface-muted: var(--neutral-100);
+  --color-border: var(--neutral-200);
+  --color-border-strong: var(--neutral-300);
+
+  /* Text */
+  --color-heading: var(--neutral-900);
+  --color-text: var(--neutral-800);
+  --color-muted: var(--neutral-600);
+  --color-subtle: var(--neutral-500);
+
+  /* Primary: Zeal green */
+  --color-primary: var(--brand-700);
+  --color-primary-hover: var(--brand-800);
+  --color-primary-soft: var(--brand-100);
+  --color-on-primary: var(--neutral-0);
+
+  /* Accent: amber */
+  --color-accent: var(--accent-700);
+  --color-accent-strong: var(--accent-600);
+  --color-accent-soft: var(--accent-100);
+
+  /* Semantic */
+  --color-success: var(--brand-success);
+  --color-warning: var(--brand-warning);
+  --color-error: var(--brand-danger);
+
+  --radius-pill: 9999px;
+  --radius-card: 1.25rem;
+
+  --shadow-card: 0 14px 38px -18px rgba(13, 22, 17, 0.35);
+  --shadow-glow: 0 8px 24px -8px rgba(28, 85, 42, 0.55);
+
+  --ease-snap: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  --font-display: var(--brand-font-display);
+  --font-body: var(--brand-font-body);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background: var(--color-background);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overscroll-behavior: none;
+  position: fixed;
+  inset: 0;
+}
+
+/* Frosted surface for HUD pills / overlay cards. */
+@utility glass-card {
+  background: color-mix(in srgb, var(--color-surface) 86%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid color-mix(in srgb, var(--color-border-strong) 70%, transparent);
+  box-shadow: var(--shadow-card);
+}
+
+/* Legible display text over busy backgrounds. */
+@utility text-hud {
+  font-family: var(--font-display);
+  text-shadow:
+    0 1px 2px rgba(255, 255, 255, 0.8),
+    0 2px 12px rgba(13, 22, 17, 0.18);
+}
+
+/* ── Game animations ─────────────────────────────────────────── */
+
+/* Amber pulse for hinted cells */
+@keyframes hint-pulse {
+  0%,
+  100% {
+    box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--color-accent-strong) 85%, transparent);
+    background: var(--color-accent-soft);
+  }
+  50% {
+    box-shadow: inset 0 0 0 6px color-mix(in srgb, var(--color-accent-strong) 45%, transparent);
+    background: color-mix(in srgb, var(--color-accent-soft) 55%, var(--color-surface));
+  }
+}
+.animate-hint {
+  animation: hint-pulse 0.9s var(--ease-snap) infinite;
+}
+
+/* Number collected / result icon pop */
+@keyframes pop-in {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.12);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.animate-pop {
+  animation: pop-in 0.45s var(--ease-snap) both;
+}
+
+/* Screen fade+rise on mount */
+@keyframes rise-in {
+  from {
+    transform: translateY(14px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.animate-rise {
+  animation: rise-in 0.5s var(--ease-snap) both;
+}
+
+/* Victory shimmer sweep across the board */
+@keyframes board-glow {
+  0% {
+    box-shadow: var(--shadow-card);
+  }
+  50% {
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-accent-strong) 35%, transparent),
+      var(--shadow-glow);
+  }
+  100% {
+    box-shadow: var(--shadow-card);
+  }
+}
+.animate-win {
+  animation: board-glow 0.9s var(--ease-snap) 2;
+}

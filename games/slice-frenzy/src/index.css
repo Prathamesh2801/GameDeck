@@ -1,0 +1,88 @@
+@import "tailwindcss";
+@import "../../../packages/brand/brand.css";
+
+/*
+  Slice Frenzy: design tokens (Tailwind v4), mapped onto the shared Zeal
+  brand palette (packages/brand). Fonts load in index.html.
+*/
+@theme {
+  --font-sans: var(--brand-font-body);
+  --font-display: var(--brand-font-display);
+
+  /* Surfaces / neutrals */
+  --color-background: var(--neutral-50);
+  --color-surface: var(--neutral-0);
+  --color-surface-muted: var(--neutral-100);
+  --color-surface-translucent: rgba(255, 255, 255, 0.9);
+  --color-border: var(--neutral-200);
+  --color-border-strong: var(--neutral-300);
+
+  /* Text */
+  --color-heading: var(--neutral-900);
+  --color-text: var(--neutral-800);
+  --color-muted: var(--neutral-600);
+  --color-subtle: var(--neutral-500);
+
+  /* Primary: Zeal green */
+  --color-primary: var(--brand-700);
+  --color-primary-hover: var(--brand-800);
+  --color-primary-soft: var(--brand-100);
+  --color-on-primary: var(--neutral-0);
+
+  /* Accent: amber */
+  --color-accent: var(--accent-600);
+  --color-accent-soft: var(--accent-100);
+
+  /* Semantic */
+  --color-success: var(--brand-success);
+  --color-success-soft: var(--brand-100);
+  --color-warning: var(--brand-warning);
+  --color-warning-soft: var(--accent-100);
+  --color-error: var(--brand-danger);
+  --color-error-soft: #f9e3e1;
+  --color-info: #3a6ea8;
+  --color-info-soft: #e6eef7;
+}
+
+html,
+body {
+  /* The app is a fixed-size frame — the page itself never scrolls. All real
+     scrolling happens inside the start screen's own overflow-y-auto area.
+     This prevents the brief font-load reflow from making the page taller than
+     the viewport (which let users scroll the game's top out of view). */
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  /* Neutral base with soft brand-green / amber washes. */
+  background-color: var(--color-background);
+  background-image: radial-gradient(
+      1100px 700px at 50% -10%,
+      rgba(28, 85, 42, 0.16),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 600px at 100% 110%,
+      rgba(217, 150, 31, 0.12),
+      transparent 55%
+    ),
+    radial-gradient(
+      700px 500px at 0% 100%,
+      rgba(28, 85, 42, 0.08),
+      transparent 55%
+    );
+  background-attachment: fixed;
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollable but with no visible scrollbar — keeps the framed UI clean */
+.no-scrollbar {
+  scrollbar-width: none; /* Firefox */
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chromium / Safari */
+}

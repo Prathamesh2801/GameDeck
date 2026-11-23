@@ -1,0 +1,55 @@
+/*
+  GameDeck brand: Zeal Interactive Services.
+  The single source of brand colour and type. Every game and the web app
+  import this file, then map their own semantic tokens onto these variables,
+  so a rebrand happens here only.
+
+  Palette: neutral, slightly green-tinted greys, with the logo's forest green
+  as the primary and a warm amber as its complementary accent (rewards,
+  coins, highlights). Fonts load through <link> tags in each index.html
+  (Outfit display, Inter body).
+*/
+:root {
+  /* Brand green: logo colour is --brand-700 */
+  --brand-950: #0a2211;
+  --brand-900: #10331a;
+  --brand-800: #154421;
+  --brand-700: #1c552a;
+  --brand-600: #24703a;
+  --brand-500: #2f8a4a;
+  --brand-400: #56a96d;
+  --brand-200: #b9dcc2;
+  --brand-100: #deefe2;
+  --brand-50: #f0f7f1;
+
+  /* Accent amber: complements the green */
+  --accent-700: #9a6510;
+  --accent-600: #b97a14;
+  --accent-500: #d9961f;
+  --accent-400: #ebb44a;
+  --accent-100: #fbefd6;
+
+  /* Neutrals (light UI) */
+  --neutral-0: #ffffff;
+  --neutral-50: #f6f7f5;
+  --neutral-100: #eef1ee;
+  --neutral-200: #dfe4e0;
+  --neutral-300: #c3ccc5;
+  --neutral-500: #8a958d;
+  --neutral-600: #5f6b63;
+  --neutral-800: #27322b;
+  --neutral-900: #142019;
+
+  /* Dark surfaces (game canvases, overlays) */
+  --ink-900: #0d1611;
+  --ink-800: #142019;
+  --ink-700: #1d2c23;
+
+  /* Semantic */
+  --brand-success: #2f8a4a;
+  --brand-warning: #d9961f;
+  --brand-danger: #c4453b;
+
+  --brand-font-display: "Outfit", system-ui, sans-serif;
+  --brand-font-body: "Inter", system-ui, sans-serif;
+}
