@@ -7,9 +7,13 @@ import Login from "./admin/Login.jsx";
 import AdminLayout from "./admin/AdminLayout.jsx";
 import Decks from "./admin/Decks.jsx";
 import DeckScores from "./admin/DeckScores.jsx";
+import DeckHome from "./player/DeckHome.jsx";
+import Leaderboard from "./player/Leaderboard.jsx";
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/admin" replace /> },
+  { path: "/d/:code", element: <DeckHome /> },
+  { path: "/d/:code/leaderboard/:slug", element: <Leaderboard /> },
   { path: "/admin/login", element: <Login /> },
   {
     path: "/admin",

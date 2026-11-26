@@ -14,5 +14,5 @@ export default defineConfig({
     },
   },
   // Shared brand assets live outside this app's root.
-  server: { fs: { allow: ["../.."] } },
+  server: { port: 5303, strictPort: true, fs: { allow: ["../.."] } },
 });

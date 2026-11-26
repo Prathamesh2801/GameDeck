@@ -10,5 +10,5 @@ export default defineConfig({
     alias: { '@brand': fileURLToPath(new URL('../../packages/brand', import.meta.url)) },
   },
   // Shared brand assets live outside this app's root.
-  server: { fs: { allow: ['../..'] } },
+  server: { port: 5304, strictPort: true, fs: { allow: ['../..'] } },
 })

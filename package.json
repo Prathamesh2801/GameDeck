@@ -1,0 +1,12 @@
+{
+  "name": "gamedeck",
+  "private": true,
+  "description": "GameDeck monorepo: run everything locally from here.",
+  "scripts": {
+    "setup": "npm install && npm --prefix server install && npm --prefix web install && npm --prefix games/slice-frenzy install && npm --prefix games/picture-perfect install && npm --prefix games/lane-dash install && npm --prefix games/zip-to-victory install && npm --prefix games/strike-alley install",
+    "dev": "concurrently -k -n api,web,slice,picture,lane,zip,strike -c green,blue,magenta,cyan,yellow,white,gray \"npm --prefix server run dev\" \"npm --prefix web run dev\" \"npm --prefix games/slice-frenzy run dev\" \"npm --prefix games/picture-perfect run dev\" \"npm --prefix games/lane-dash run dev\" \"npm --prefix games/zip-to-victory run dev\" \"npm --prefix games/strike-alley run dev\""
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.7"
+  }
+}

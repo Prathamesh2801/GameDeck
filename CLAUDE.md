@@ -23,7 +23,7 @@ One git repo (monorepo). The old per-game repos' `.git` folders are archived out
 games/<slug>/       each game is its own Vite app with its own package.json + node_modules
 packages/brand/     Zeal brand: brand.css (palette + font vars), zeal-logo.png, zeal-logo-white.png, favicon.png
 packages/game-sdk/  (planned) shared runtime: load deck theme, start play session, submit score
-web/                React + Vite app: admin dashboard at /admin (built); player site at /d/<code> (planned)
+web/                React + Vite app: admin dashboard at /admin, player site at /d/<code>
 server/             Node + Express 5 + MySQL API (CommonJS), runs as a cPanel Node.js app
 ```
 
@@ -37,12 +37,18 @@ server/             Node + Express 5 + MySQL API (CommonJS), runs as a cPanel No
 - Express 5 forwards thrown errors and rejected promises, so handlers throw `HttpError(status, message)` and the final handler turns that into `{error}` JSON.
 - Not yet: score caps for `slice-frenzy`/`lane-dash` (no fixed ceiling, so they need playtest data), rate limiting, and serving the web app or game builds.
 
+## Running everything locally
+
+From the repo root: `npm run setup` once (installs every package), then `npm run dev`, which uses `concurrently` to start the API (4000), web (5173) and all five games (5301–5305). Open **http://localhost:5173**. The web dev server proxies `/api` → 4000 and `/games/<slug>` → that game's port (`GAME_PORTS` in `web/vite.config.js`; each game pins the same port with `strictPort`), so the player site, games and API share one origin, as they will in production.
+
 ## Web app (`web/`)
 
-- `npm run dev` serves on 5173 and proxies `/api` to the server on 4000, so start the server first. `npm run build` outputs `web/dist` (the server will serve it in production, same origin).
+- `npm run build` outputs `web/dist` (the server will serve it in production, same origin).
 - React 19, React Router (data router in `src/main.jsx`), Tailwind v4 mapped onto the brand palette in `src/index.css` (`btn` / `input` utilities), react-icons, react-hot-toast. Modals use native `<dialog>`, and deletes use inline confirm (no `window.confirm`).
 - `src/api.js`: `api(path, {method, body})` (JSON, throws `Error(serverMessage)`, attaches the admin token from localStorage, and on 401 clears it and goes to `/admin/login`) and `useApi(path)` → `{data, error, loading, reload}`.
 - `src/games.js`: per-slug icon and blurb. Names and max scores come from the server.
+- Player screens (`src/player/`): `DeckHome` (`/d/:code`: nickname once per deck on this device via `useNickname` in localStorage, then game cards), `Leaderboard` (`/d/:code/leaderboard/:slug`, own row highlighted), `PlayerShell` (brand hero + footer, `DeckUnavailable`).
+- **Game launch contract:** Play calls `POST /api/decks/:code/plays` and then navigates to `/games/<slug>/?token=<playToken>&deck=<CODE>`. The game must submit its score once to `POST /api/plays/<token>/score` and send the player back to `/d/<CODE>/leaderboard/<slug>`. (The games don't do this yet; see the legacy hub binding below.)
 - Admin screens (`src/admin/`): `Login`, `AdminLayout` (auth guard + header), `Decks` (cards: share link + copy, games, status Live/Paused/Expired, edit/pause/delete), `DeckForm` (name, ordered game picker, optional close time), `DeckScores` (per-game tabs, every play sorted by score, delete).
 
 ## Brand system
