@@ -23,7 +23,7 @@ One git repo (monorepo). The old per-game repos' `.git` folders are archived out
 games/<slug>/       each game is its own Vite app with its own package.json + node_modules
 packages/brand/     Zeal brand: brand.css (palette + font vars), zeal-logo.png, zeal-logo-white.png, favicon.png
 packages/game-sdk/  (planned) shared runtime: load deck theme, start play session, submit score
-web/                (planned) dashboard + player site (nickname → games → play → leaderboard)
+web/                React + Vite app: admin dashboard at /admin (built); player site at /d/<code> (planned)
 server/             Node + Express 5 + MySQL API (CommonJS), runs as a cPanel Node.js app
 ```
 
@@ -36,6 +36,14 @@ server/             Node + Express 5 + MySQL API (CommonJS), runs as a cPanel No
 - Routes in `app.js`. Public: `GET /api/decks/:code`, `POST /api/decks/:code/plays {game, nickname}` → `{token}`, `POST /api/plays/:token/score {score}`, `GET /api/decks/:code/games/:slug/leaderboard` (best per nickname, top 20). Admin: `POST /api/admin/login {password}` → HMAC-signed bearer token (7 days); everything else under `/api/admin/*` requires it (games, deck CRUD, deck plays, delete play).
 - Express 5 forwards thrown errors and rejected promises, so handlers throw `HttpError(status, message)` and the final handler turns that into `{error}` JSON.
 - Not yet: score caps for `slice-frenzy`/`lane-dash` (no fixed ceiling, so they need playtest data), rate limiting, and serving the web app or game builds.
+
+## Web app (`web/`)
+
+- `npm run dev` serves on 5173 and proxies `/api` to the server on 4000, so start the server first. `npm run build` outputs `web/dist` (the server will serve it in production, same origin).
+- React 19, React Router (data router in `src/main.jsx`), Tailwind v4 mapped onto the brand palette in `src/index.css` (`btn` / `input` utilities), react-icons, react-hot-toast. Modals use native `<dialog>`, and deletes use inline confirm (no `window.confirm`).
+- `src/api.js`: `api(path, {method, body})` (JSON, throws `Error(serverMessage)`, attaches the admin token from localStorage, and on 401 clears it and goes to `/admin/login`) and `useApi(path)` → `{data, error, loading, reload}`.
+- `src/games.js`: per-slug icon and blurb. Names and max scores come from the server.
+- Admin screens (`src/admin/`): `Login`, `AdminLayout` (auth guard + header), `Decks` (cards: share link + copy, games, status Live/Paused/Expired, edit/pause/delete), `DeckForm` (name, ordered game picker, optional close time), `DeckScores` (per-game tabs, every play sorted by score, delete).
 
 ## Brand system
 

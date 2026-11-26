@@ -1,0 +1,81 @@
+@import "tailwindcss";
+@import "../../packages/brand/brand.css";
+
+/* GameDeck web: semantic tokens mapped onto the shared Zeal brand palette. */
+@theme {
+  --font-sans: var(--brand-font-body);
+  --font-display: var(--brand-font-display);
+
+  --color-background: var(--neutral-50);
+  --color-surface: var(--neutral-0);
+  --color-surface-muted: var(--neutral-100);
+  --color-border: var(--neutral-200);
+  --color-border-strong: var(--neutral-300);
+
+  --color-heading: var(--neutral-900);
+  --color-text: var(--neutral-800);
+  --color-muted: var(--neutral-600);
+  --color-subtle: var(--neutral-500);
+
+  --color-primary: var(--brand-700);
+  --color-primary-hover: var(--brand-800);
+  --color-primary-soft: var(--brand-100);
+  --color-on-primary: var(--neutral-0);
+
+  --color-accent: var(--accent-600);
+  --color-accent-soft: var(--accent-100);
+
+  --color-success: var(--brand-success);
+  --color-danger: var(--brand-danger);
+  --color-danger-soft: #f9e3e1;
+
+  --color-ink: var(--ink-900);
+
+  --shadow-card: 0 1px 2px rgba(13, 22, 17, 0.06), 0 8px 24px -12px rgba(13, 22, 17, 0.18);
+}
+
+body {
+  margin: 0;
+  background: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Shared control styles (kept tiny; everything else is Tailwind utilities). */
+@utility btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  padding: 0.55rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: background-color 150ms, color 150ms, border-color 150ms;
+  cursor: pointer;
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+@utility input {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-surface);
+  padding: 0.6rem 0.85rem;
+  font-size: 0.9rem;
+  color: var(--color-heading);
+  outline: none;
+  &:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-soft);
+  }
+}
+
+dialog::backdrop {
+  background: rgba(13, 22, 17, 0.45);
+  backdrop-filter: blur(2px);
+}
