@@ -24,10 +24,18 @@ games/<slug>/       each game is its own Vite app with its own package.json + no
 packages/brand/     Zeal brand: brand.css (palette + font vars), zeal-logo.png, zeal-logo-white.png, favicon.png
 packages/game-sdk/  (planned) shared runtime: load deck theme, start play session, submit score
 web/                (planned) dashboard + player site (nickname → games → play → leaderboard)
-server/             (planned) Node + Express + MySQL API, runs as a cPanel Node.js app
+server/             Node + Express 5 + MySQL API (CommonJS), runs as a cPanel Node.js app
 ```
 
-Planned data model: `games` (slug, name, max_score), `decks` (name, share code, enabled, optional end date), `deck_games`, `plays` (deck, game, nickname, score, time; one row per server-issued play session). Score sanity: the server issues a one-time session per play, accepts one score per session, and rejects scores above the game's `max_score`.
+## Server (`server/`)
+
+- `npm run db:init`: creates the DB (if permitted) and applies `schema.sql` (idempotent; seeds/updates the `games` catalogue with `max_score`). `npm run dev` runs with `node --watch` on port 4000. `npm test`: one `node:test` end-to-end flow against the local DB (it creates and deletes its own deck). Run a single test with `node --test --test-name-pattern "<name>"`.
+- Config comes from `server/.env` (git-ignored; template `.env.example`) via `process.loadEnvFile`. On cPanel the same keys are set as app env vars, and `server.js` is the startup file (it listens on `process.env.PORT`).
+- Kept CommonJS and MariaDB-compatible SQL (e.g. `VALUES()` upserts, not row aliases) because cPanel's Node/DB versions are unknown.
+- Tables: `games` (slug, name, `max_score` NULL = uncapped), `decks` (8-char `code` from a no-look-alike alphabet, enabled, `expires_at`), `deck_games` (ordered), `plays` (one row per session; a 32-hex `token` can submit one score within 2h).
+- Routes in `app.js`. Public: `GET /api/decks/:code`, `POST /api/decks/:code/plays {game, nickname}` → `{token}`, `POST /api/plays/:token/score {score}`, `GET /api/decks/:code/games/:slug/leaderboard` (best per nickname, top 20). Admin: `POST /api/admin/login {password}` → HMAC-signed bearer token (7 days); everything else under `/api/admin/*` requires it (games, deck CRUD, deck plays, delete play).
+- Express 5 forwards thrown errors and rejected promises, so handlers throw `HttpError(status, message)` and the final handler turns that into `{error}` JSON.
+- Not yet: score caps for `slice-frenzy`/`lane-dash` (no fixed ceiling, so they need playtest data), rate limiting, and serving the web app or game builds.
 
 ## Brand system
 

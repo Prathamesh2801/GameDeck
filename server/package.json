@@ -1,0 +1,20 @@
+{
+  "name": "gamedeck-server",
+  "private": true,
+  "version": "0.1.0",
+  "description": "GameDeck API: decks, play sessions, scores, leaderboards",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "db:init": "node db-init.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^5.3.0",
+    "mysql2": "^3.24.6"
+  }
+}
