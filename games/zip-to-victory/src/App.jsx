@@ -4,8 +4,7 @@ import GameScreen from './components/GameScreen'
 import ResultScreen from './components/ResultScreen'
 import BlockedScreen from './components/BlockedScreen'
 import { generatePuzzle } from './game/generator'
-import { APP_CONFIG } from './data/appConfig'
-import { getToken } from './utils/token'
+import { canPlay } from '@sdk'
 
 export default function App() {
   const [screen, setScreen] = useState('start') // start | playing | result
@@ -18,9 +17,9 @@ export default function App() {
     setScreen('playing')
   }
 
-  // Production requires a signed hub token — no untracked, unscored sessions.
-  // DEV_MODE bypasses this so the game can be replayed freely while developing.
-  const blocked = !APP_CONFIG.DEV_MODE && !getToken()
+  // Production requires a play token — no untracked, unscored sessions.
+  // practice play bypasses this so the game can be replayed freely while developing.
+  const blocked = !canPlay
 
   // Each screen owns its own scroll (e.g. the start modal's rule list); a
   // leftover scroll position from the previous screen must not carry over.

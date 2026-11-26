@@ -4,15 +4,14 @@ import DeviceFrame from "./components/DeviceFrame.jsx";
 import BlockedScreen from "./components/BlockedScreen.jsx";
 import StartScreen from "./screens/StartScreen.jsx";
 import GameScreen from "./screens/GameScreen.jsx";
-import { APP_CONFIG } from "./data/appConfig.js";
-import { getToken } from "./utils/token.js";
+import { canPlay } from "@sdk";
 
 export default function App() {
   // screen state machine: start ↔ game
   const [screen, setScreen] = useState("start");
 
-  // Production: require a signed hub token — no untracked, unscored sessions.
-  if (!APP_CONFIG.DEV_MODE && !getToken()) {
+  // Production: require a play token — no untracked, unscored sessions.
+  if (!canPlay) {
     return <BlockedScreen />;
   }
 

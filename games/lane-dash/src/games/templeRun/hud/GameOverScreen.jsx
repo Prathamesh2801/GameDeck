@@ -4,10 +4,10 @@ import { motion } from 'framer-motion';
  * Centered overlay used for both the paused state and game-over state
  * (same layout, different copy/actions — spec §4 phase table).
  *
- * Paused: pass `paused`, `onResume`, `onRestart` (Restart renders in DEV_MODE
+ * Paused: pass `paused`, `onResume`, `onRestart` (Restart renders in practice play
  *   only — production is one play per user, so the pause card is Resume-only).
- * Game over: pass the hub `score` plus submit state (`devMode`, `submitState`,
- *   `submitError`, `hubUrl`, `onRetry` for a DEV replay, `onRetrySubmit` to
+ * Game over: pass the final `score` plus submit state (`devMode`, `submitState`,
+ *   `submitError`, `leaderboardUrl`, `onRetry` for a DEV replay, `onRetrySubmit` to
  *   re-POST after a failure). The footer is driven off the submit state.
  *   `completed` = the run ran out the clock (heading "Time's Up!") vs a crash
  *   (heading "Game Over").
@@ -21,7 +21,7 @@ export function GameOverScreen({
   devMode,
   submitState,
   submitError,
-  hubUrl,
+  leaderboardUrl,
   onRetry,
   onRetrySubmit,
 }) {
@@ -61,7 +61,7 @@ export function GameOverScreen({
               devMode={devMode}
               submitState={submitState}
               submitError={submitError}
-              hubUrl={hubUrl}
+              leaderboardUrl={leaderboardUrl}
               onRetry={onRetry}
               onRetrySubmit={onRetrySubmit}
             />
@@ -73,10 +73,10 @@ export function GameOverScreen({
 }
 
 /**
- * Game-over footer. DEV_MODE offers a free replay; production POSTs the score
- * once and reports progress, ending with an auto-return to the hub.
+ * Game-over footer. practice play offers a free replay; production POSTs the score
+ * once and reports progress, ending with an go to the leaderboard.
  */
-function GameOverFooter({ devMode, submitState, submitError, hubUrl, onRetry, onRetrySubmit }) {
+function GameOverFooter({ devMode, submitState, submitError, leaderboardUrl, onRetry, onRetrySubmit }) {
   if (devMode) {
     return (
       <Btn primary onClick={onRetry}>
@@ -101,12 +101,12 @@ function GameOverFooter({ devMode, submitState, submitError, hubUrl, onRetry, on
   if (submitState === 'success') {
     return (
       <>
-        <p className="text-hud text-muted text-sm font-medium">Returning to games…</p>
+        <p className="text-hud text-muted text-sm font-medium">Opening the leaderboard…</p>
         <a
-          href={hubUrl}
+          href={leaderboardUrl}
           className="text-hud bg-primary text-on-primary shadow-glow ease-snap hover:bg-primary-hover rounded-pill w-full px-8 py-3 text-center text-lg font-bold transition-all duration-150 hover:scale-[1.03] active:scale-95"
         >
-          Back to Games now
+          See the leaderboard now
         </a>
       </>
     );

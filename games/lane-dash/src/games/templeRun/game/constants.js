@@ -209,8 +209,8 @@ export const GAME = {
   PLAYER_SHADOW_LIFT_SHRINK: 0.2, // e.g. 0.2 = 20% smaller at the jump apex
   PLAYER_SHADOW_LIFT_FADE: 0.35, // e.g. 0.35 = 35% more transparent at the apex
   COIN_DISPLAY_W: 70, // near (full-scale) on-screen width of a coin
-  // (A coin's bonus-point value lives in APP_CONFIG.POINTS_PER_COIN,
-  // src/data/appConfig.js — the hub score is distance score + that bonus.)
+  // Final score = distance score + coins collected x this.
+  POINTS_PER_COIN: 10,
   // --- Coin trains ----------------------------------------------------------
   // Sometimes a coin spawn is a trailing GROUP in one lane (Temple Run style):
   // CHANCE of a coin spawn becoming a train, MIN..MAX coins per train, GAP_PX

@@ -11,6 +11,7 @@ export default defineConfig({
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
       "@brand": fileURLToPath(new URL("../../packages/brand", import.meta.url)),
+      "@sdk": fileURLToPath(new URL("../../packages/game-sdk/index.js", import.meta.url)),
     },
   },
   // Shared brand assets live outside this app's root.

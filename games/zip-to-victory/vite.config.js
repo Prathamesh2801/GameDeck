@@ -7,7 +7,10 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   base: '/games/zip-to-victory/',
   resolve: {
-    alias: { '@brand': fileURLToPath(new URL('../../packages/brand', import.meta.url)) },
+    alias: {
+      '@brand': fileURLToPath(new URL('../../packages/brand', import.meta.url)),
+      '@sdk': fileURLToPath(new URL('../../packages/game-sdk/index.js', import.meta.url)),
+    },
   },
   // Shared brand assets live outside this app's root.
   server: { port: 5304, strictPort: true, fs: { allow: ['../..'] } },

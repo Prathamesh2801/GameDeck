@@ -10,8 +10,7 @@ import {
 import { FaTrophy } from "react-icons/fa";
 
 import { QUIZ_CONFIG } from "../data/quizConfig.js";
-import { APP_CONFIG } from "../data/appConfig.js";
-import { submitScore } from "../utils/submitScore.js";
+import { isDevPlay, leaderboardUrl, REDIRECT_DELAY, submitScore } from "@sdk";
 
 const statVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -76,12 +75,12 @@ export default function Summary({ userAnswers, questions, onPlayAgain }) {
     runSubmit();
   }, [runSubmit]);
 
-  // Production: once the score is saved, auto-return to the hub after a beat.
+  // Production: once the score is saved, go to the leaderboard after a beat.
   useEffect(() => {
-    if (APP_CONFIG.DEV_MODE || submitState !== "success") return;
+    if (isDevPlay || submitState !== "success") return;
     const timer = setTimeout(() => {
-      window.location.href = APP_CONFIG.HUB_URL;
-    }, APP_CONFIG.REDIRECT_DELAY);
+      window.location.href = leaderboardUrl;
+    }, REDIRECT_DELAY);
     return () => clearTimeout(timer);
   }, [submitState]);
 
@@ -151,7 +150,7 @@ export default function Summary({ userAnswers, questions, onPlayAgain }) {
       </div>
 
       <div className="flex flex-col items-center gap-3 mt-1">
-        {APP_CONFIG.DEV_MODE ? (
+        {isDevPlay ? (
           <motion.button
             onClick={onPlayAgain}
             className="toggle-btn-bg flex items-center justify-center gap-2 px-6 py-2.5 font-display text-sm sm:text-base font-bold uppercase tracking-wide text-brand-purple-dark border border-brand-border-strong rounded-full cursor-pointer transition-all duration-200 hover:shadow-[0_0_12px_3px_rgba(28,85,42,0.2)]"
@@ -168,13 +167,13 @@ export default function Summary({ userAnswers, questions, onPlayAgain }) {
         ) : submitState === "success" ? (
           <>
             <p className="font-display text-sm uppercase tracking-wide text-brand-text-dim m-0">
-              Returning to games…
+              Opening the leaderboard…
             </p>
             <a
-              href={APP_CONFIG.HUB_URL}
+              href={leaderboardUrl}
               className="font-display text-sm font-bold uppercase tracking-wide text-brand-purple-dark underline"
             >
-              Back to Games now
+              See the leaderboard now
             </a>
           </>
         ) : (

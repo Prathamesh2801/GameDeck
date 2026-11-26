@@ -649,7 +649,7 @@ export class RunScene extends Phaser.Scene {
 
   // ---- collisions + scoring ------------------------------------------------
   // Score = survival distance (tickScore below, paced by GAME.SCORE_TICK_MS)
-  // + a coin bonus. The bonus value (APP_CONFIG.POINTS_PER_COIN) is applied on
+  // + a coin bonus. The bonus value (GAME.POINTS_PER_COIN) is applied on
   // the React side — the scene reports raw score and coinCount at game-over.
 
   tickScore() {
@@ -808,8 +808,8 @@ export class RunScene extends Phaser.Scene {
       this.music?.stop();
       // Payload: authoritative distance score + coin count (game truth) — the
       // HUD 'coins-update' can lag behind by any coins still in flight, so the
-      // hub score is derived from THESE, not the React state. React applies the
-      // coin bonus (× APP_CONFIG.POINTS_PER_COIN) on top of the score. The final
+      // final score is derived from THESE, not the React state. React applies the
+      // coin bonus (× GAME.POINTS_PER_COIN) on top of the score. The final
       // `false` marks this as a crash (vs a time-up completion — see completeRun).
       EventBus.emit('game-over', this.score, this.coinCount, false);
       this.scene.pause();

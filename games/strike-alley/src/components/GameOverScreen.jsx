@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { C } from '../game/constants.js'
-import { APP_CONFIG } from '../data/appConfig.js'
-import { submitScore } from '../utils/submitScore.js'
 import logoUrl from '@brand/zeal-logo.png'
+import { isDevPlay, leaderboardUrl, REDIRECT_DELAY, submitScore } from '@sdk'
 
 // Perfect game = a strike in every frame.
 const MAX_SCORE = C.TOTAL_FRAMES * C.STRIKE_SCORE
@@ -55,14 +54,14 @@ export default function GameOverScreen({ score, onPlayAgain }) {
     return () => clearTimeout(retryTimer.current)
   }, [runSubmit])
 
-  // Production: once the score is saved, auto-return to the hub — the only way
-  // onward. A hub game is played once; the DEV_MODE branch below is the sole
+  // Production: once the score is saved, go to the leaderboard — the only way
+  // onward. A GameDeck play is scored once; the practice-play branch below is the sole
   // replay path. No Retry / Back buttons in production.
   useEffect(() => {
-    if (APP_CONFIG.DEV_MODE || saveState !== 'success') return
+    if (isDevPlay || saveState !== 'success') return
     const t = setTimeout(() => {
-      window.location.href = APP_CONFIG.HUB_URL
-    }, APP_CONFIG.REDIRECT_DELAY)
+      window.location.href = leaderboardUrl
+    }, REDIRECT_DELAY)
     return () => clearTimeout(t)
   }, [saveState])
 
@@ -87,13 +86,13 @@ export default function GameOverScreen({ score, onPlayAgain }) {
         <p className="gameover-rating">{rating(score)}</p>
 
         <div className="gameover-footer">
-          {APP_CONFIG.DEV_MODE ? (
+          {isDevPlay ? (
             // DEV only: the single replay path. Production has no buttons at all.
             <button className="play-again" onClick={onPlayAgain}>
               Play Again
             </button>
           ) : saveState === 'success' ? (
-            <p className="gameover-status">Returning to games…</p>
+            <p className="gameover-status">Opening the leaderboard…</p>
           ) : saveState === 'failed' ? (
             <p className="gameover-status error">
               Couldn’t save your score. Please reopen the game from your app.

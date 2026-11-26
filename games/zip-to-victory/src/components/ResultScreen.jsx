@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { FaTrophy, FaRegClock, FaArrowRotateRight } from 'react-icons/fa6'
 import { formatTime, GAME_SECONDS } from '../game/useTimer'
-import { APP_CONFIG } from '../data/appConfig'
-import { submitScore } from '../utils/submitScore'
+import { isDevPlay, leaderboardUrl, REDIRECT_DELAY, submitScore } from '@sdk'
 
 function BreakdownRow({ label, value, accent }) {
   return (
@@ -41,12 +40,12 @@ export default function ResultScreen({ result, onPlayAgain }) {
     runSubmit()
   }, [runSubmit])
 
-  // Production: auto-return to the hub after a successful submit.
+  // Production: go to the leaderboard after a successful submit.
   useEffect(() => {
-    if (APP_CONFIG.DEV_MODE || submitState !== 'success') return
+    if (isDevPlay || submitState !== 'success') return
     const t = setTimeout(() => {
-      window.location.href = APP_CONFIG.HUB_URL
-    }, APP_CONFIG.REDIRECT_DELAY)
+      window.location.href = leaderboardUrl
+    }, REDIRECT_DELAY)
     return () => clearTimeout(t)
   }, [submitState])
 
@@ -92,8 +91,8 @@ export default function ResultScreen({ result, onPlayAgain }) {
         </div>
       </div>
 
-      {/* Footer — hub integration: replay in dev, submit/redirect in production. */}
-      {APP_CONFIG.DEV_MODE ? (
+      {/* Footer — replay in dev, submit/redirect in production. */}
+      {isDevPlay ? (
         <button
           type="button"
           onClick={onPlayAgain}
@@ -106,12 +105,12 @@ export default function ResultScreen({ result, onPlayAgain }) {
         <p className="text-sm font-semibold text-muted">Saving your score…</p>
       ) : submitState === 'success' ? (
         <div className="flex flex-col items-center gap-2">
-          <p className="text-sm font-semibold text-muted">Returning to games…</p>
+          <p className="text-sm font-semibold text-muted">Opening the leaderboard…</p>
           <a
-            href={APP_CONFIG.HUB_URL}
+            href={leaderboardUrl}
             className="text-sm font-semibold text-primary underline-offset-4 hover:underline"
           >
-            Back to Games now
+            See the leaderboard now
           </a>
         </div>
       ) : (

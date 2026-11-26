@@ -5,14 +5,13 @@ import PowerMeter from './components/PowerMeter.jsx'
 import GameOverScreen from './components/GameOverScreen.jsx'
 import Instructions from './components/Instructions.jsx'
 import BlockedScreen from './components/BlockedScreen.jsx'
-import { APP_CONFIG } from './data/appConfig.js'
-import { getToken } from './utils/token.js'
+import { canPlay } from '@sdk'
 
-// Production gate: this game is only playable when launched from the hub with a
-// signed token, so there are no untracked, unscored sessions. In DEV_MODE the
+// Production gate: this game is only playable when launched from a GameDeck link with a
+// signed token, so there are no untracked, unscored sessions. In practice play the
 // token isn't required. Kept as a thin wrapper so Game's hooks stay unconditional.
 export default function App() {
-  if (!APP_CONFIG.DEV_MODE && !getToken()) return <BlockedScreen />
+  if (!canPlay) return <BlockedScreen />
   return <Game />
 }
 

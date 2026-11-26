@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { MdLock } from "react-icons/md";
 
 // Shown in production when the game is opened without a valid ?token=... — i.e.
-// not launched from the games hub. Blocks play entirely so no untracked,
+// not launched from a GameDeck link. Blocks play entirely so no untracked,
 // unscored session can happen.
 export default function BlockedScreen() {
   return (
@@ -22,8 +22,7 @@ export default function BlockedScreen() {
         Access Blocked
       </h2>
       <p className="font-body text-sm sm:text-base text-brand-text-muted leading-relaxed m-0">
-        This game can only be opened from the app. Please head back and tap
-        Picture Perfect from your games list to start playing.
+        Open Picture Perfect from your GameDeck link to play and save your score.
       </p>
     </motion.div>
   );

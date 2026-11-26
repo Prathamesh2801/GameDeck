@@ -4,13 +4,12 @@ import { MdQuiz } from "react-icons/md";
 
 import ALL_QUESTIONS from "../data/questions.js";
 import { QUIZ_CONFIG } from "../data/quizConfig.js";
-import { APP_CONFIG } from "../data/appConfig.js";
-import { getToken } from "../utils/token.js";
 import Question from "./Question.jsx";
 import Summary from "./Summary.jsx";
 import StartModal from "./StartModal.jsx";
 import LoadingScreen from "./LoadingScreen.jsx";
 import BlockedScreen from "./BlockedScreen.jsx";
+import { canPlay } from "@sdk";
 
 function getRandomQuestions(allQuestions, count) {
   const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
@@ -91,7 +90,7 @@ export default function Quiz() {
     [handleSelectAnswer],
   );
 
-  // DEV_MODE only: fully reset to a fresh playthrough (new random questions).
+  // practice play only: fully reset to a fresh playthrough (new random questions).
   const resetQuiz = useCallback(() => {
     selectedQuestions.current = getRandomQuestions(
       ALL_QUESTIONS,
@@ -104,9 +103,9 @@ export default function Quiz() {
     setQuizStarted(false);
   }, []);
 
-  // Production: the game must be launched from the hub with a token. Without one
+  // Production: the game must be launched from a GameDeck link. Without one
   // there's nothing to score against, so block play entirely.
-  if (!APP_CONFIG.DEV_MODE && !getToken()) {
+  if (!canPlay) {
     return <BlockedScreen />;
   }
 

@@ -14,7 +14,7 @@ function formatTime(ms) {
 /**
  * Top HUD overlay — one row of compact stat tiles: Score + Coins (left), the
  * countdown Timer (center) and Lives/hearts (right, where the removed pause
- * button used to sit). Coins are a bonus on top of the score (hub points =
+ * button used to sit). Coins are a bonus on top of the score (final score =
  * score + coins × POINTS_PER_COIN); the run ends when the timer hits 0 or all
  * lives are lost.
  *

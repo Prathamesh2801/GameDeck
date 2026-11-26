@@ -1,6 +1,6 @@
 import logoUrl from '@brand/zeal-logo.png'
 
-// Production gate: shown when the game is opened without a hub token, so there
+// Production gate: shown when the game is opened without a play token, so there
 // are no untracked, unscored sessions. Styled to match the intro / game-over
 // parchment cards.
 export default function BlockedScreen() {
@@ -17,8 +17,7 @@ export default function BlockedScreen() {
         </div>
 
         <p className="blocked-text">
-          Strike Alley can only be opened from the app. Please head back to your
-          games list and tap it there to play.
+          Open Strike Alley from your GameDeck link to play and save your score.
         </p>
       </div>
     </div>

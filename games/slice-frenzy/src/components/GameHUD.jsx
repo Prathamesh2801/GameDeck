@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { FaPause } from "react-icons/fa";
 import { RULES } from "../game/constants";
-import { APP_CONFIG } from "../data/appConfig.js";
+import { isDevPlay } from "@sdk";
 
 // Pure overlay — sits above the canvas, ignores pointer events except the
 // control buttons so slashes pass straight through to Phaser.
@@ -43,7 +43,7 @@ export default function GameHUD({ score, timeLeft, combo, onPause, feastActive }
           </motion.div>
           {/* Pause is dev-only: in production the game is played once, so
               pause → Restart / Main Menu would be a way to cheat a fresh run. */}
-          {APP_CONFIG.DEV_MODE && !feastActive && (
+          {isDevPlay && !feastActive && (
             <button
               onClick={onPause}
               className="pointer-events-auto grid h-11 w-11 place-items-center rounded-2xl border border-border/70 bg-surface-translucent text-base text-muted backdrop-blur-sm transition-colors hover:text-primary"

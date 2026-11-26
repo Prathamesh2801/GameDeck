@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import LOGO from '@brand/zeal-logo.png';
 
 /**
- * Shown in production when the game is opened without a hub token — there's no
+ * Shown in production when the game is opened without a play token — there's no
  * user/game to score against, so play is blocked (spec: no untracked sessions).
  * Matches the StartScreen card styling (glass-card + brand logo + amber divider).
  */
@@ -38,8 +38,7 @@ export function BlockedScreen() {
           Access Blocked
         </h2>
         <p className="text-muted mx-auto mt-3 max-w-[18rem] text-sm leading-relaxed">
-          This game can only be opened from the app. Please head back and tap it
-          from your games list.
+          Open this game from your GameDeck link to play and save your score.
         </p>
       </motion.div>
     </motion.div>

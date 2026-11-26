@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import { FaRegClock } from "react-icons/fa";
-import { APP_CONFIG } from "../data/appConfig.js";
-import { submitScore } from "../utils/submitScore.js";
+import { isDevPlay, leaderboardUrl, REDIRECT_DELAY, submitScore } from "@sdk";
 
 export default function GameOverOverlay({ result, onReplay, onExit }) {
   const submittedRef = useRef(false);
@@ -28,12 +27,12 @@ export default function GameOverOverlay({ result, onReplay, onExit }) {
     runSubmit();
   }, [runSubmit]);
 
-  // Production: auto-return to the hub after a successful submit.
+  // Production: go to the leaderboard after a successful submit.
   useEffect(() => {
-    if (APP_CONFIG.DEV_MODE || submitState !== "success") return;
+    if (isDevPlay || submitState !== "success") return;
     const t = setTimeout(() => {
-      window.location.href = APP_CONFIG.HUB_URL;
-    }, APP_CONFIG.REDIRECT_DELAY);
+      window.location.href = leaderboardUrl;
+    }, REDIRECT_DELAY);
     return () => clearTimeout(t);
   }, [submitState]);
 
@@ -69,8 +68,8 @@ export default function GameOverOverlay({ result, onReplay, onExit }) {
           </p>
         </div>
 
-        {/* Footer — driven by DEV_MODE / submit state */}
-        {APP_CONFIG.DEV_MODE ? (
+        {/* Footer — driven by practice play / submit state */}
+        {isDevPlay ? (
           <>
             <button
               onClick={onReplay}
@@ -92,13 +91,13 @@ export default function GameOverOverlay({ result, onReplay, onExit }) {
         ) : submitState === "success" ? (
           <div className="mt-5">
             <p className="font-display text-sm font-semibold text-primary">
-              Returning to games&hellip;
+              Opening the leaderboard&hellip;
             </p>
             <a
-              href={APP_CONFIG.HUB_URL}
+              href={leaderboardUrl}
               className="mt-3 inline-block font-display text-xs font-semibold uppercase tracking-widest text-muted underline transition-colors hover:text-primary"
             >
-              Back to Games now
+              See the leaderboard now
             </a>
           </div>
         ) : (

@@ -1,7 +1,7 @@
 import { GiThreeLeaves } from "react-icons/gi";
 import DeviceFrame from "./DeviceFrame.jsx";
 
-// Shown in production when the game is opened without a valid hub token.
+// Shown in production when the game is opened without a play token.
 // Matches Slice Frenzy's card / brand styling.
 export default function BlockedScreen() {
   return (
@@ -20,8 +20,7 @@ export default function BlockedScreen() {
             Access Blocked
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-muted">
-            This game can only be opened from the app. Please head back and tap it
-            from your games list.
+            Open this game from your GameDeck link to play and save your score.
           </p>
         </div>
       </div>

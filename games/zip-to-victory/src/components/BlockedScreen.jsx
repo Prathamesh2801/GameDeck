@@ -1,7 +1,7 @@
 import { FaLock } from 'react-icons/fa6'
 
 /*
-  Shown in production when the game is opened without a valid hub token — no
+  Shown in production when the game is opened without a play token — no
   untracked, unscored sessions. Mirrors the StartScreen's full-screen modal look
   (brand backdrop behind a single floating surface card).
 */
@@ -21,8 +21,7 @@ export default function BlockedScreen() {
           </div>
           <h2 className="text-hud mt-6 text-2xl font-bold text-heading">Access Blocked</h2>
           <p className="mt-3 text-sm leading-relaxed text-muted">
-            This game can only be opened from the app. Please head back and tap it from your games
-            list.
+            Open this game from your GameDeck link to play and save your score.
           </p>
         </div>
       </div>

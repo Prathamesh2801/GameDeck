@@ -492,7 +492,7 @@ body {
   color: var(--brand-700);
 }
 
-/* ---------- access-blocked gate (no hub token) ---------- */
+/* ---------- access-blocked gate (no play token) ---------- */
 
 .blocked {
   position: absolute;

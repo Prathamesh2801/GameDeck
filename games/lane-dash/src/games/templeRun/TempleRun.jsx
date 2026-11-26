@@ -10,9 +10,7 @@ import { Countdown } from './hud/Countdown';
 import { TutorialHints } from './hud/TutorialHints';
 import { GameOverScreen } from './hud/GameOverScreen';
 import { BlockedScreen } from './hud/BlockedScreen';
-import { APP_CONFIG } from '@/data/appConfig';
-import { getToken } from '@/utils/token';
-import { submitScore } from '@/utils/submitScore';
+import { canPlay, isDevPlay, leaderboardUrl, REDIRECT_DELAY, submitScore } from '@sdk';
 
 /**
  * Mounts the Phaser game and owns the phase state machine + EventBus wiring
@@ -34,13 +32,13 @@ export default function TempleRun({ onComplete }) {
   const [timeLeft, setTimeLeft] = useState(GAME.RUN_DURATION_MS); // ms remaining (HUD clock)
   const [lives, setLives] = useState(GAME.LIVES); // remaining lives (HUD hearts)
 
-  // Production requires a hub token (no untracked/unscored sessions). DEV_MODE
+  // Production requires a play token (no untracked/unscored sessions). practice play
   // bypasses it so the game can be replayed freely. Stable for the mount (the
   // URL doesn't change), so hooks below still run in a consistent order.
-  const blocked = !APP_CONFIG.DEV_MODE && !getToken();
+  const blocked = !canPlay;
 
-  // --- Hub score submission (fires once when the run ends) ------------------
-  // Coins ARE the score: what we POST is (coins × POINTS_PER_COIN).
+  // --- Score submission (fires once when the run ends) ------------------
+  // Score = distance + coins × GAME.POINTS_PER_COIN.
   const submittedRef = useRef(false);
   const [submitState, setSubmitState] = useState('submitting'); // submitting | success | error
   const [submitError, setSubmitError] = useState(null);
@@ -49,8 +47,8 @@ export default function TempleRun({ onComplete }) {
   const [finalDistance, setFinalDistance] = useState(0);
   const [finalCoins, setFinalCoins] = useState(0);
   const [completed, setCompleted] = useState(false); // true = time's up, false = crashed
-  // Hub score = distance score + coin bonus.
-  const hubScore = finalDistance + finalCoins * APP_CONFIG.POINTS_PER_COIN;
+  // Final score = distance score + coin bonus.
+  const finalScore = finalDistance + finalCoins * GAME.POINTS_PER_COIN;
 
   // Create the Phaser game once; tear it down fully on unmount. Skipped while
   // blocked so Phaser never mounts on the Access-Blocked screen.
@@ -67,11 +65,11 @@ export default function TempleRun({ onComplete }) {
     const onLives = (n) => setLives(n);
     const onGameOver = (distance, coinCount, didComplete) => {
       EventBus.emit('sfx', SOUNDS.GAME_OVER); // fires here, not GameOverScreen.jsx — that's shared with the (silent) paused state
-      setFinalDistance(distance); // game-truth numbers for the hub score
+      setFinalDistance(distance); // game-truth numbers for the final score
       setFinalCoins(coinCount);
       setCompleted(!!didComplete); // time's up vs crash → results heading
       setPhase('over');
-      onComplete?.(distance + coinCount * APP_CONFIG.POINTS_PER_COIN);
+      onComplete?.(distance + coinCount * GAME.POINTS_PER_COIN);
     };
 
     EventBus.on('ready', onReady);
@@ -95,20 +93,20 @@ export default function TempleRun({ onComplete }) {
     };
   }, [onComplete, blocked]);
 
-  // ---- hub submission ------------------------------------------------------
+  // ---- score submission ------------------------------------------------------
 
-  // POST the coin-based score. DEV_MODE logs instead of hitting the network.
+  // POST the coin-based score. practice play logs instead of hitting the network.
   const runSubmit = useCallback(async () => {
     setSubmitState('submitting');
     setSubmitError(null);
     try {
-      await submitScore({ score: hubScore });
+      await submitScore({ score: finalScore });
       setSubmitState('success');
     } catch (err) {
       setSubmitState('error');
       setSubmitError(err?.message || "Couldn't save your score. Please retry.");
     }
-  }, [hubScore]);
+  }, [finalScore]);
 
   // Submit exactly once when the run ends (guarded ref survives StrictMode's
   // double-invoked effects). The retry paths below re-arm it for DEV replays.
@@ -118,12 +116,12 @@ export default function TempleRun({ onComplete }) {
     runSubmit();
   }, [phase, runSubmit]);
 
-  // Production: auto-return to the hub after a successful submit.
+  // Production: go to the leaderboard after a successful submit.
   useEffect(() => {
-    if (APP_CONFIG.DEV_MODE || submitState !== 'success') return;
+    if (isDevPlay || submitState !== 'success') return;
     const t = setTimeout(() => {
-      window.location.href = APP_CONFIG.HUB_URL;
-    }, APP_CONFIG.REDIRECT_DELAY);
+      window.location.href = leaderboardUrl;
+    }, REDIRECT_DELAY);
     return () => clearTimeout(t);
   }, [submitState]);
 
@@ -173,7 +171,7 @@ export default function TempleRun({ onComplete }) {
   }, []);
 
   // Retry: reset the scene to idle, then run the same countdown as a fresh start.
-  // (DEV_MODE replay path — re-arm the one-shot submit for the next run's end.)
+  // (practice play replay path — re-arm the one-shot submit for the next run's end.)
   const retry = useCallback(() => {
     submittedRef.current = false;
     setSubmitState('submitting');
@@ -188,7 +186,7 @@ export default function TempleRun({ onComplete }) {
     EventBus.emit('start-run');
   }, []);
 
-  // DEV_MODE-only (production hides the pause Restart — one play per user).
+  // practice play-only (production hides the pause Restart — one play per user).
   const restartToStart = useCallback(() => {
     // From pause → back to Start screen (scene reset, idle + animating).
     EventBus.emit('restart');
@@ -262,8 +260,8 @@ export default function TempleRun({ onComplete }) {
         {phase === 'paused' && (
           <GameOverScreen
             paused
-            score={score + coins * APP_CONFIG.POINTS_PER_COIN}
-            devMode={APP_CONFIG.DEV_MODE}
+            score={score + coins * GAME.POINTS_PER_COIN}
+            devMode={isDevPlay}
             onResume={resume}
             onRestart={restartToStart}
           />
@@ -271,12 +269,12 @@ export default function TempleRun({ onComplete }) {
 
         {phase === 'over' && (
           <GameOverScreen
-            score={hubScore}
+            score={finalScore}
             completed={completed}
-            devMode={APP_CONFIG.DEV_MODE}
+            devMode={isDevPlay}
             submitState={submitState}
             submitError={submitError}
-            hubUrl={APP_CONFIG.HUB_URL}
+            leaderboardUrl={leaderboardUrl}
             onRetry={retry}
             onRetrySubmit={runSubmit}
           />
